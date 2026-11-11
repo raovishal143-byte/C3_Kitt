@@ -1,5 +1,5 @@
 /*
-  C3_Kitt — ESP32-C3 Super Mini
+  KITT scan — ESP32-C3 Super Mini
   Five-LED scanner with a two-LED fading tail.
 
   LED order, left to right:
