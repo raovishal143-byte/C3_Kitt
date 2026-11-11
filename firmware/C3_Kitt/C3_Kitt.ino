@@ -1,11 +1,11 @@
 /*
   KITT scan — ESP32-C3 Super Mini
-  Five-LED scanner with a two-LED fading tail.
+  Five-LED scanner with a single 50% trailing LED.
 
-  LED order, left to right:
+  Final LED order, left to right:
     LED 1 -> GPIO2
     LED 2 -> GPIO0
-    LED 3 -> GPIO6
+    LED 3 -> GPIO8
     LED 4 -> GPIO10
     LED 5 -> GPIO21
 
@@ -21,11 +21,13 @@
   Movement:
     Left to right, then right to left.
     200 ms per position.
+
+  No buzzer/audio output is included.
 */
 
 #include <Arduino.h>
 
-constexpr uint8_t LED_PINS[] = {2, 0, 6, 10, 21};
+constexpr uint8_t LED_PINS[] = {2, 0, 8, 10, 21};
 constexpr int8_t LED_COUNT = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 
 constexpr uint8_t MAIN_BRIGHTNESS = 255;  // 100% (8-bit PWM)
