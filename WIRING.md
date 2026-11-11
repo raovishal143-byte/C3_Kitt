@@ -1,29 +1,32 @@
-# Wiring — ESP32-C3 Super Mini KITT LEDs
+# C3_Kitt — Updated LED Wiring
 
-## GPIO assignment
+Board: ESP32-C3 Super Mini
 
-| Function | Board label | GPIO |
-|---|---:|---:|
-| Left headlight | 0 | GPIO0 |
-| Right headlight | 1 | GPIO1 |
-| Scanner LED 1 (leftmost) | 3 | GPIO3 |
-| Scanner LED 2 | 4 | GPIO4 |
-| Scanner LED 3 | 5 | GPIO5 |
-| Scanner LED 4 (rightmost) | 10 | GPIO10 |
+## Five-LED scanner GPIO assignment
 
-## Connect each LED
+| LED position (left to right) | Board GPIO |
+|---|---:|
+| LED 1 | GPIO2 |
+| LED 2 | GPIO0 |
+| LED 3 | GPIO6 |
+| LED 4 | GPIO10 |
+| LED 5 | GPIO21 |
 
-For every ordinary 2-pin LED:
-1. GPIO -> 330 Ω resistor -> LED anode (long leg, +)
-2. LED cathode (short leg, flat edge, -) -> GND
+## LED connection
 
-Repeat with a separate resistor for all six LEDs. Do not share one resistor between LEDs.
+Each LED has its own series resistor:
 
-## Important
-- Use the GPIO label shown in the table, not the physical pin count.
-- GPIO2, GPIO8 and GPIO9 are avoided because they are ESP32-C3 boot-strapping pins.
-- GPIO20 and GPIO21 are left free for serial/UART.
-- GPIO4 and GPIO5 have alternate JTAG/ADC functions but can be used as digital outputs in this project.
-- Keep LED current modest; do not connect high-current lamps directly to GPIO.
-- Disconnect USB power before changing wiring.
-- Board clones can differ. Check the silkscreen and board revision before connecting LEDs.
+GPIO -> resistor -> LED anode (+)
+LED cathode (-) -> GND
+
+The firmware uses active-HIGH outputs:
+- HIGH = LED ON
+- LOW = LED OFF
+
+## Important board note
+
+GPIO2 is an ESP32-C3 strapping pin. The board may fail to enter its normal boot mode if external circuitry pulls this pin to an unsuitable level during reset. The LED/resistor connection must not hold GPIO2 low or otherwise interfere with boot. If the board ever fails to boot after wiring, disconnect USB power before checking the GPIO2 LED circuit.
+
+GPIO21 is also commonly used as UART0 TX on ESP32-C3 boards. The scanner firmware uses it as a digital output, so serial output on that pin may not be available while the LED is connected.
+
+Use one resistor per LED. Disconnect USB power before changing wiring.
