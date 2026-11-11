@@ -1,20 +1,37 @@
 # C3 KITT — ESP32-C3 Super Mini
 
-A standalone LED controller for a KITT / Knight Rider-style front light bar.
+Standalone five-LED KITT / Knight Rider-style scanner for the ESP32-C3 Super Mini.
 
-## Hardware
-- ESP32-C3 Super Mini (16-pin board: 8 pins per side)
-- 2 continuously illuminated headlight LEDs
-- 4 red scanner LEDs
-- One 220–330 Ω series resistor per LED
+## Current hardware configuration
+
+Five LEDs, connected left to right:
+
+1. GPIO2
+2. GPIO0
+3. GPIO6
+4. GPIO10
+5. GPIO21
+
+Each LED is connected as GPIO -> series resistor -> LED anode (+), with the LED cathode (-) connected to GND. Each LED has its own resistor.
 
 ## Behaviour
-- Both headlights turn on continuously after startup.
-- Four red scanner LEDs animate left-to-right and back-to-left.
-- Scanner speed and brightness behaviour will be configurable in firmware.
 
-## Safety / wiring
-Use one current-limiting resistor per ordinary LED. GPIO pins are 3.3 V logic and must not be used to drive high-current lamps directly. Confirm the exact board pin labels before wiring; the GPIO assignment will be documented in the firmware once verified.
+- One red LED lights at a time.
+- The illuminated LED sweeps from left to right.
+- The scanner reverses and sweeps right to left continuously.
+- Default step time is 90 ms.
+- Change `SCAN_STEP_MS` in `firmware/C3_Kitt/C3_Kitt.ino` to adjust speed.
 
-## Firmware
-Arduino framework project. See `firmware/C3_Kitt/C3_Kitt.ino`.
+## Build
+
+This is an Arduino-framework PlatformIO project. Run:
+
+```sh
+pio run
+```
+
+The GitHub Actions workflow builds the firmware and uploads `firmware.bin` as the `C3_Kitt-firmware` artifact.
+
+## Pin note
+
+GPIO2 is an ESP32-C3 strapping pin; ensure its LED circuit does not interfere with reset-time boot strapping. GPIO21 is commonly UART0 TX and is used here as a scanner output.
