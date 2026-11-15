@@ -77,7 +77,7 @@ jobs:
           EOF
 
           (cd "$PACKAGE_DIR" && sha256sum *.bin > SHA256SUMS.txt)
-          zip -j KITT-flash-package.zip "$PACKAGE_DIR"/*
+          zip -j "$PACKAGE_DIR/KITT-flash-package.zip" "$PACKAGE_DIR"/*
 
       - name: Upload complete firmware package
         uses: actions/upload-artifact@v4
