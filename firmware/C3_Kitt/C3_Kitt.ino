@@ -3,11 +3,11 @@
   Five-LED scanner with a single 50% trailing LED.
 
   Final LED order, left to right:
-    LED 1 (Left)   -> GPIO8
+    LED 1 (Left)   -> GPIO1
     LED 2          -> GPIO10
     LED 3 (Centre) -> GPIO21
     LED 4          -> GPIO0
-    LED 5 (Right)  -> GPIO2
+    LED 5 (Right)  -> GPIO3
 
   Wiring per LED:
     GPIO -> series resistor -> LED anode (+)
@@ -27,7 +27,7 @@
 
 #include <Arduino.h>
 
-constexpr uint8_t LED_PINS[] = {8, 10, 21, 0, 2};
+constexpr uint8_t LED_PINS[] = {1, 10, 21, 0, 3};
 constexpr int8_t LED_COUNT = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 
 constexpr uint8_t MAIN_BRIGHTNESS = 255;  // 100% (8-bit PWM)
