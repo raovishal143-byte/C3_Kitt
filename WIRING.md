@@ -6,11 +6,11 @@ Board: ESP32-C3 Super Mini
 
 | LED position (left to right) | Board GPIO |
 |---|---:|
-| LED 1 — Left | GPIO8 |
+| LED 1 — Left | GPIO1 |
 | LED 2 | GPIO10 |
 | LED 3 — Centre | GPIO21 |
 | LED 4 | GPIO0 |
-| LED 5 — Right | GPIO2 |
+| LED 5 — Right | GPIO3 |
 
 ## LED connection
 
@@ -27,6 +27,6 @@ Connect all LED cathodes to the board's GND. Use one resistor per LED. Disconnec
 
 ## Important ESP32-C3 board notes
 
-GPIO2 and GPIO8 are ESP32-C3 strapping pins. External LED circuits must not force these pins to an unsuitable level during reset, or the board may fail to boot. With the LED/resistor connected from GPIO to GND, verify that the circuit does not prevent the required reset-time strapping level. If the board does not boot after wiring, disconnect USB power and check these two LED circuits first.
+This mapping avoids GPIO2 and GPIO8, which are ESP32-C3 strapping pins. GPIO1 and GPIO3 are used for the leftmost and rightmost LEDs instead.
 
 GPIO21 is commonly used as UART0 TX on ESP32-C3 boards. This scanner uses GPIO21 as an LED output, so serial output on that pin may not be available while the LED is connected.
