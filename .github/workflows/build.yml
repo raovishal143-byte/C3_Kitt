@@ -11,16 +11,77 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Install PlatformIO
-        run: pip install platformio
+
+      - name: Install build and merge tools
+        run: |
+          pip install platformio esptool
+
       - name: Build ESP32-C3 firmware
         run: pio run
-      - name: Upload firmware artifact
+
+      - name: Assemble complete flash package
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD_DIR=".pio/build/esp32-c3-devkitm-1"
+          PACKAGE_DIR="KITT-flash-package"
+          mkdir -p "$PACKAGE_DIR"
+
+          test -s "$BUILD_DIR/bootloader.bin"
+          test -s "$BUILD_DIR/partitions.bin"
+          test -s "$BUILD_DIR/firmware.bin"
+
+          BOOT_APP0="$(find "$HOME/.platformio" -type f -name boot_app0.bin -print -quit)"
+          if [ -z "$BOOT_APP0" ]; then
+            echo "ERROR: PlatformIO boot_app0.bin was not found."
+            exit 1
+          fi
+
+          cp "$BUILD_DIR/bootloader.bin" "$PACKAGE_DIR/"
+          cp "$BUILD_DIR/partitions.bin" "$PACKAGE_DIR/"
+          cp "$BUILD_DIR/firmware.bin" "$PACKAGE_DIR/"
+          cp "$BOOT_APP0" "$PACKAGE_DIR/boot_app0.bin"
+
+          esptool --chip esp32c3 merge-bin \
+            --flash-mode dio --flash-size 4MB --flash-freq 40m \
+            -o "$PACKAGE_DIR/KITT-full-flash.bin" \
+            0x0 "$PACKAGE_DIR/bootloader.bin" \
+            0x8000 "$PACKAGE_DIR/partitions.bin" \
+            0xE000 "$PACKAGE_DIR/boot_app0.bin" \
+            0x10000 "$PACKAGE_DIR/firmware.bin"
+
+          cat > "$PACKAGE_DIR/FLASHING.txt" <<'EOF'
+          ESP32-C3 KITT - FULL FLASH PACKAGE
+
+          RECOMMENDED METHOD (single file):
+          1. Open https://espressif.github.io/esptool-js/
+          2. Connect the ESP32-C3 using Chrome or Microsoft Edge.
+          3. Select KITT-full-flash.bin.
+          4. Set flash address to 0x0.
+          5. Keep erase-all disabled; program the file and wait for completion.
+          6. Reset the board after successful verification.
+
+          The merged image contains:
+          bootloader.bin   at 0x0000
+          partitions.bin   at 0x8000
+          boot_app0.bin    at 0xE000
+          firmware.bin     at 0x10000
+
+          Do not flash firmware.bin alone at 0x0.
+          Board target: ESP32-C3, 4 MB flash, DIO, 40 MHz.
+          EOF
+
+          (cd "$PACKAGE_DIR" && sha256sum *.bin > SHA256SUMS.txt)
+          zip -j KITT-flash-package.zip "$PACKAGE_DIR"/*
+
+      - name: Upload complete firmware package
         uses: actions/upload-artifact@v4
         with:
-          name: KITT scan
-          path: .pio/build/esp32-c3-devkitm-1/firmware.bin
+          name: KITT full flash package
+          path: KITT-flash-package/KITT-flash-package.zip
+          if-no-files-found: error
