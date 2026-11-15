@@ -1,6 +1,6 @@
 /*
   KITT scan — ESP32-C3 Super Mini
-  Five-LED scanner with a single 25% trailing LED.
+  Five-LED scanner with a two-LED trailing fade.
 
   Final LED order, left to right:
     LED 1 (Left)   -> GPIO1
@@ -14,9 +14,10 @@
     LED cathode (-) -> GND
 
   Brightness:
-    Moving/main LED       = 100%
-    Immediately trailing =  25%
-    All other LEDs        =   0%
+    Moving/main LED          = 100%
+    First trailing LED       =  25%
+    Second trailing LED      =  15%
+    All other LEDs           =   0%
 
   Movement:
     Left to right, then right to left.
@@ -31,7 +32,8 @@ constexpr uint8_t LED_PINS[] = {1, 10, 21, 0, 3};
 constexpr int8_t LED_COUNT = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 
 constexpr uint8_t MAIN_BRIGHTNESS = 255;  // 100% (8-bit PWM)
-constexpr uint8_t TAIL_BRIGHTNESS = 64;   // approx. 25%
+constexpr uint8_t FIRST_TAIL_BRIGHTNESS = 64;  // approx. 25%
+constexpr uint8_t SECOND_TAIL_BRIGHTNESS = 38; // approx. 15%
 constexpr uint32_t STEP_TIME_MS = 200;
 
 int8_t position = 0;
@@ -39,7 +41,7 @@ int8_t direction = 1;
 uint32_t lastStep = 0;
 
 void showScanner(int8_t mainPosition, int8_t travelDirection) {
-  // Turn all LEDs off before applying the two brightness levels.
+  // Turn all LEDs off before applying the three brightness levels.
   for (uint8_t i = 0; i < LED_COUNT; ++i) {
     analogWrite(LED_PINS[i], 0);
   }
@@ -47,10 +49,16 @@ void showScanner(int8_t mainPosition, int8_t travelDirection) {
   // Main moving LED.
   analogWrite(LED_PINS[mainPosition], MAIN_BRIGHTNESS);
 
-  // The LED immediately behind the moving head.
-  const int8_t tailPosition = mainPosition - travelDirection;
-  if (tailPosition >= 0 && tailPosition < LED_COUNT) {
-    analogWrite(LED_PINS[tailPosition], TAIL_BRIGHTNESS);
+  // First trailing LED, immediately behind the moving head.
+  const int8_t firstTailPosition = mainPosition - travelDirection;
+  if (firstTailPosition >= 0 && firstTailPosition < LED_COUNT) {
+    analogWrite(LED_PINS[firstTailPosition], FIRST_TAIL_BRIGHTNESS);
+  }
+
+  // Second trailing LED, one more position behind the first tail.
+  const int8_t secondTailPosition = mainPosition - (2 * travelDirection);
+  if (secondTailPosition >= 0 && secondTailPosition < LED_COUNT) {
+    analogWrite(LED_PINS[secondTailPosition], SECOND_TAIL_BRIGHTNESS);
   }
 }
 
