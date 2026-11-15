@@ -34,7 +34,7 @@ constexpr int8_t LED_COUNT = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 constexpr uint8_t MAIN_BRIGHTNESS = 255;  // 100% (8-bit PWM)
 constexpr uint8_t FIRST_TAIL_BRIGHTNESS = 64;  // approx. 25%
 constexpr uint8_t SECOND_TAIL_BRIGHTNESS = 38; // approx. 15%
-constexpr uint32_t STEP_TIME_MS = 200;
+constexpr uint32_t STEP_TIME_MS = 250;
 
 int8_t position = 0;
 int8_t direction = 1;
