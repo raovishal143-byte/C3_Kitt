@@ -6,27 +6,27 @@ Board: ESP32-C3 Super Mini
 
 | LED position (left to right) | Board GPIO |
 |---|---:|
-| LED 1 | GPIO2 |
-| LED 2 | GPIO0 |
-| LED 3 | GPIO6 |
-| LED 4 | GPIO10 |
-| LED 5 | GPIO21 |
+| LED 1 — Left | GPIO8 |
+| LED 2 | GPIO10 |
+| LED 3 — Centre | GPIO21 |
+| LED 4 | GPIO0 |
+| LED 5 — Right | GPIO2 |
 
 ## LED connection
 
 Each LED has its own series resistor:
 
-GPIO -> resistor -> LED anode (+)
+GPIO -> resistor -> LED anode (+)  
 LED cathode (-) -> GND
 
 The firmware uses active-HIGH outputs:
 - HIGH = LED ON
 - LOW = LED OFF
 
-## Important board note
+Connect all LED cathodes to the board's GND. Use one resistor per LED. Disconnect USB power before changing wiring.
 
-GPIO2 is an ESP32-C3 strapping pin. The board may fail to enter its normal boot mode if external circuitry pulls this pin to an unsuitable level during reset. The LED/resistor connection must not hold GPIO2 low or otherwise interfere with boot. If the board ever fails to boot after wiring, disconnect USB power before checking the GPIO2 LED circuit.
+## Important ESP32-C3 board notes
 
-GPIO21 is also commonly used as UART0 TX on ESP32-C3 boards. The scanner firmware uses it as a digital output, so serial output on that pin may not be available while the LED is connected.
+GPIO2 and GPIO8 are ESP32-C3 strapping pins. External LED circuits must not force these pins to an unsuitable level during reset, or the board may fail to boot. With the LED/resistor connected from GPIO to GND, verify that the circuit does not prevent the required reset-time strapping level. If the board does not boot after wiring, disconnect USB power and check these two LED circuits first.
 
-Use one resistor per LED. Disconnect USB power before changing wiring.
+GPIO21 is commonly used as UART0 TX on ESP32-C3 boards. This scanner uses GPIO21 as an LED output, so serial output on that pin may not be available while the LED is connected.
