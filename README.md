@@ -6,11 +6,11 @@ Standalone five-LED KITT / Knight Rider-style scanner for the ESP32-C3 Super Min
 
 Five LEDs, connected left to right:
 
-1. LED 1 — Left: GPIO8
+1. LED 1 — Left: GPIO1
 2. LED 2: GPIO10
 3. LED 3 — Centre: GPIO21
 4. LED 4: GPIO0
-5. LED 5 — Right: GPIO2
+5. LED 5 — Right: GPIO3
 
 Each LED is connected as GPIO -> series resistor -> LED anode (+), with the LED cathode (-) connected to GND. Each LED has its own resistor.
 
@@ -34,4 +34,4 @@ The GitHub Actions workflow builds the firmware and uploads `firmware.bin` as th
 
 ## Pin note
 
-GPIO2 and GPIO8 are ESP32-C3 strapping pins. Ensure the LED circuits do not interfere with reset-time boot strapping. GPIO21 is commonly UART0 TX and is used here as a scanner output.
+This mapping avoids GPIO2 and GPIO8, which are ESP32-C3 strapping pins. GPIO21 is commonly UART0 TX and is used here as a scanner output, so serial output on that pin may be affected.
