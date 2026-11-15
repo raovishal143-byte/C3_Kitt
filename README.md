@@ -6,21 +6,21 @@ Standalone five-LED KITT / Knight Rider-style scanner for the ESP32-C3 Super Min
 
 Five LEDs, connected left to right:
 
-1. GPIO2
-2. GPIO0
-3. GPIO6
-4. GPIO10
-5. GPIO21
+1. LED 1 — Left: GPIO8
+2. LED 2: GPIO10
+3. LED 3 — Centre: GPIO21
+4. LED 4: GPIO0
+5. LED 5 — Right: GPIO2
 
 Each LED is connected as GPIO -> series resistor -> LED anode (+), with the LED cathode (-) connected to GND. Each LED has its own resistor.
 
 ## Behaviour
 
-- One red LED lights at a time.
-- The illuminated LED sweeps from left to right.
-- The scanner reverses and sweeps right to left continuously.
-- Default step time is 90 ms.
-- Change `SCAN_STEP_MS` in `firmware/C3_Kitt/C3_Kitt.ino` to adjust speed.
+- The main red LED sweeps from left to right, then right to left continuously.
+- The LED immediately behind the main LED glows at approximately 50% brightness.
+- The main LED is at 100% brightness; all other LEDs are off.
+- Default step time is 200 ms per position.
+- Change `STEP_TIME_MS` in `firmware/C3_Kitt/C3_Kitt.ino` to adjust speed.
 
 ## Build
 
@@ -30,8 +30,8 @@ This is an Arduino-framework PlatformIO project. Run:
 pio run
 ```
 
-The GitHub Actions workflow builds the firmware and uploads `firmware.bin` as the `C3_Kitt-firmware` artifact.
+The GitHub Actions workflow builds the firmware and uploads `firmware.bin` as the `KITT scan` artifact.
 
 ## Pin note
 
-GPIO2 is an ESP32-C3 strapping pin; ensure its LED circuit does not interfere with reset-time boot strapping. GPIO21 is commonly UART0 TX and is used here as a scanner output.
+GPIO2 and GPIO8 are ESP32-C3 strapping pins. Ensure the LED circuits do not interfere with reset-time boot strapping. GPIO21 is commonly UART0 TX and is used here as a scanner output.
