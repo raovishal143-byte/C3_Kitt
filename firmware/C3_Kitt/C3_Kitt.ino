@@ -1,6 +1,6 @@
 /*
   KITT scan — ESP32-C3 Super Mini
-  Five-LED scanner with a single 50% trailing LED.
+  Five-LED scanner with a single 25% trailing LED.
 
   Final LED order, left to right:
     LED 1 (Left)   -> GPIO1
@@ -15,7 +15,7 @@
 
   Brightness:
     Moving/main LED       = 100%
-    Immediately trailing =  50%
+    Immediately trailing =  25%
     All other LEDs        =   0%
 
   Movement:
@@ -31,7 +31,7 @@ constexpr uint8_t LED_PINS[] = {1, 10, 21, 0, 3};
 constexpr int8_t LED_COUNT = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 
 constexpr uint8_t MAIN_BRIGHTNESS = 255;  // 100% (8-bit PWM)
-constexpr uint8_t TAIL_BRIGHTNESS = 128;  // approx. 50%
+constexpr uint8_t TAIL_BRIGHTNESS = 64;   // approx. 25%
 constexpr uint32_t STEP_TIME_MS = 200;
 
 int8_t position = 0;
